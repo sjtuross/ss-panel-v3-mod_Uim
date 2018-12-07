@@ -463,7 +463,7 @@ class UserController extends BaseController
 	public function node($request, $response, $args)
     {
         $user = Auth::getUser();
-        $nodes = Node::where('type', 1)->orderBy('node_class')->orderBy('name')->get();
+        $nodes = Node::where('type', 1)->orderBy('node_class')->orderBy('custom_method','desc')->orderBy('sort','desc')->orderBy('name')->get();
         $relay_rules = Relay::where('user_id', $this->user->id)->orwhere('user_id', 0)->orderBy('id', 'asc')->get();
 		if (!Tools::is_protocol_relay($user)) {
             $relay_rules = array();
