@@ -492,8 +492,10 @@ class UserController extends BaseController
 			$array_node['info']=$node->info;
 			$array_node['mu_only']=$node->mu_only;
 			$array_node['group']=$node->node_group;
+			$array_node['flag']=$node->flag;
 
             $array_node['raw_node'] = $node;
+			/*
 			$regex = Config::get('flag_regex');
             $matches = array();
             preg_match($regex, $node->name, $matches);
@@ -503,6 +505,7 @@ class UserController extends BaseController
 			else {
                 $array_node['flag'] = 'unknown.png';
             }
+			*/
 
 			$node_online=$node->isNodeOnline();
 			if($node_online===null){

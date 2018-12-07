@@ -7,6 +7,7 @@ namespace App\Models;
  */
 
 use App\Utils\Tools;
+use App\Services\Config;
 
 class Node extends Model
 {
@@ -20,6 +21,33 @@ class Node extends Model
         'sort' => 'int',
     ];
 
+	public function getNameAttribute()
+    {
+		$regex = Config::get('flag_regex');
+		$matches = array();
+		preg_match($regex, $this->attributes['name'], $matches);
+		if (isset($matches[0])) {
+			return substr($this->attributes['name'], strlen($matches[0]));
+		}
+		else {
+			return $this->attributes['name'];
+		}
+    }
+	
+	public function getFlagAttribute()
+    {
+		$regex = Config::get('flag_regex');
+		$matches = array();
+		preg_match($regex, $this->attributes['name'], $matches);
+		//$matches = preg_split($regex, $this->attributes['name']);
+		if (isset($matches[0])) {
+			return $matches[0].'.png';
+		}
+		else {
+			return 'unknown.png';
+		}
+    }
+	
     public function getLastNodeInfoLog()
     {
         $id = $this->attributes['id'];
