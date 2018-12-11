@@ -286,7 +286,8 @@ class User extends Model
         $class_expire_in = $this->attributes['class_expire'];
         $used_traffic = Tools::flowToGB($this->attributes['u'] + $this->attributes['d']);
         $enable_traffic = Tools::flowToGB($this->attributes['transfer_enable']);
-
+        $unused_traffic = Tools::flowToGB($this->attributes['transfer_enable'] - $this->attributes['u'] - $this->attributes['d']);
+		
         $im_type = '';
         $im_value = $this->attributes['im_value'];
         switch($this->attributes['im_type']) {
@@ -333,7 +334,7 @@ class User extends Model
                               $this->attributes['method'],
                               $this->attributes['protocol'], $this->attributes['obfs'],
                               $this->online_ip_count(), $this->lastSsTime(),
-                              $used_traffic, $enable_traffic,
+                              $unused_traffic, $used_traffic, $enable_traffic,
                               $this->lastCheckInTime(), $today_traffic,
                               $is_enable, $this->attributes['reg_date'],
                               $reg_location,
