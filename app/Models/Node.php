@@ -27,7 +27,7 @@ class Node extends Model
 		$matches = array();
 		preg_match($regex, $this->attributes['name'], $matches);
 		if (isset($matches[0])) {
-			return substr($this->attributes['name'], strlen($matches[0]));
+			return substr($this->attributes['name'], strlen($matches[0])+1);
 		}
 		else {
 			return $this->attributes['name'];
