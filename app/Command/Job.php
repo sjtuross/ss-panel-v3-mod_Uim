@@ -38,11 +38,15 @@ class Job
             if ($node->sort == 11) {
 				$server_list = explode(";", $node->server);
 				if(!Tools::is_ip($server_list[0])){
-					$node->node_ip = gethostbyname($server_list[0]);
+					if($node->changeNodeIp($server_list[0])){
+						$node->save();
+					}					
 				}
 			} else if($node->sort == 0 || $node->sort == 1 || $node->sort == 10){
 				if(!Tools::is_ip($node->server)){
-					$node->node_ip = gethostbyname($node->server);
+					if($node->changeNodeIp($node->server)){
+						$node->save();
+					}					
 				}
 			}
         }
@@ -593,10 +597,8 @@ class Job
                 Radius::Delete($user->email);
             }
 
-
-            if (strtotime($user->expire_in) < time() &&  $user->transfer_enable > 0	) {
+            if (strtotime($user->expire_in) < time()&&!file_exists(BASE_PATH."/storage/".$user->id.".expire_in")) {
                 $user->transfer_enable = 0;
-                $user->transfer_enable = Tools::toGB(Config::get('enable_account_expire_reset_traffic'));
                 $user->u = 0;
                 $user->d = 0;
                 $user->last_day_t = 0;
@@ -612,7 +614,15 @@ class Job
                 } catch (\Exception $e) {
                     echo $e->getMessage();
                 }
+				$myfile = fopen(BASE_PATH."/storage/".$user->id.".expire_in", "w+") or die("Unable to open file!");
+				$txt = "1";
+                fwrite($myfile, $txt);
+                fclose($myfile);
             }
+			elseif (strtotime($user->expire_in) > time()&&file_exists(BASE_PATH."/storage/".$user->id.".expire_in")) {
+				unlink(BASE_PATH."/storage/".$user->id.".expire_in");
+			}
+
 
 			//余量不足检测
 			if(!file_exists(BASE_PATH."/storage/traffic_notified/")){
@@ -664,7 +674,7 @@ class Job
 			) {
                 $subject = Config::get('appName')."-您的用户账户已经被删除了";
                 $to = $user->email;
-                $text = "您好，系统发现您的账号已经过期 ".Config::get('account_expire_delete_days')." 天了，帐号已经被删除。" ;
+                $text = "您好，系统发现您的账户已经过期 ".Config::get('account_expire_delete_days')." 天了，帐号已经被删除。" ;
                 try {
                     Mail::send($to, $subject, 'news/warn.tpl', [
                         "user" => $user,"text" => $text
@@ -723,15 +733,17 @@ class Job
 				strtotime($user->class_expire)<time() && 
 				strtotime($user->class_expire) > 1420041600
 			){
-				$reset_traffic=max(Config::get('class_expire_reset_traffic'),0);
-				$user->transfer_enable =Tools::toGB($reset_traffic);				
-                $user->u = 0;
-                $user->d = 0;
-                $user->last_day_t = 0;
-
-                $subject = Config::get('appName')."-您的用户等级已经过期了";
-                $to = $user->email;
-                $text = "您好，系统发现您的账号等级已经过期了。流量已经被重置为".$reset_traffic.'GB' ;
+				$text = '您好，系统发现您的账号等级已经过期了。';
+				$reset_traffic=Config::get('class_expire_reset_traffic');
+				if($reset_traffic>=0){
+					$user->transfer_enable =Tools::toGB($reset_traffic);
+					$user->u = 0;
+					$user->d = 0;
+					$user->last_day_t = 0;
+					$text.='流量已经被重置为'.$reset_traffic.'GB';
+				}
+                $subject = Config::get('appName')."-您的账户等级已经过期了";
+                $to = $user->email;              
                 try {
                     Mail::send($to, $subject, 'news/warn.tpl', [
                         "user" => $user,"text" => $text
