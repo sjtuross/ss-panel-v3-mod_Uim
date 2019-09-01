@@ -37,6 +37,7 @@
                                             <table class="table">
                                                 <tr>
                                                     <th>节点</th>
+                                                    <th>测试时间</th>
                                                     <th>电信延迟</th>
                                                     <!--    <th>电信下载速度</th>
                                                         <th>电信上传速度</th>   -->
@@ -50,6 +51,7 @@
                                                 {foreach $speedtest as $single}
                                                     <tr>
                                                         <td>{$single->node()->name}</td>
+                                                        <td>{date("Y-m-d H:i:s", $single->datetime)}</td>
                                                         <td>{$single->telecomping}</td>
                                                         <!--    <td>{$single->telecomeupload}</td>
                                                             <td>{$single->telecomedownload}</td>  -->

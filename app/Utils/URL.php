@@ -236,6 +236,7 @@ class URL
     public static function getAllUrl($user, $is_mu, $is_ss = 0)
     {
         $return_url = '';
+        /*
         if (!$is_ss) {
             $return_url .= self::getUserTraffic($user, $is_mu) . PHP_EOL;
             $return_url .= self::getUserClassExpiration($user, $is_mu) . PHP_EOL;
@@ -243,6 +244,7 @@ class URL
         if (strtotime($user->expire_in) < time()) {
             return $return_url;
         }
+        */
         if (Config::get('mergeSub') == 'true') {
             $items = array_merge(self::getAllItems($user, 1, $is_ss), self::getAllItems($user, 0, $is_ss));
         } else {

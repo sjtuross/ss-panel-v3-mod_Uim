@@ -331,7 +331,7 @@ class User extends Model
             $this->attributes['method'],
             $this->attributes['protocol'], $this->attributes['obfs'],
             $this->online_ip_count(), $this->lastSsTime(),
-            $used_traffic, $enable_traffic,
+            $unused_traffic, $used_traffic, $enable_traffic,
             $this->lastCheckInTime(), $today_traffic,
             $is_enable, $this->attributes['reg_date'],
             $reg_location,
