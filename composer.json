@@ -22,7 +22,7 @@
     "slim/twig-view": "1.2.0",
     "ramsey/uuid": "^3.0@dev",
     "cloudflare/sdk": "1.1.1",
-    "chen-see/chen-pay": "^1.0@dev",
+    "chen-see/chen-pay": "^1.3",
     "league/omnipay": "^3",
     "lokielse/omnipay-alipay": "*",
     "charlottedunois/yasmin": "*"
