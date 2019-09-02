@@ -1697,7 +1697,7 @@ class UserController extends BaseController
         $this->user->save();
         $res['msg'] = sprintf('获得了 %d MB流量.', $traffic);
         $res['unflowtraffic'] = $this->user->transfer_enable;
-        $res['traffic'] = Tools::flowAutoShow($this->user->transfer_enable);
+        $res['traffic'] = $this->user->unusedTraffic();
         $res['trafficInfo'] = array(
             'todayUsedTraffic' => $this->user->TodayusedTraffic(),
             'lastUsedTraffic' => $this->user->LastusedTraffic(),
