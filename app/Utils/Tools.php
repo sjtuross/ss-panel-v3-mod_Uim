@@ -454,7 +454,7 @@ class Tools
         }
         $item['aid'] = (int)$server[2];
         $item['net'] = 'tcp';
-        $item['type'] = 'none';
+        $item['type'] = 'auto';
         if (count($server) >= 4) {
             $item['net'] = $server[3];
             if ($item['net'] == 'ws') {
