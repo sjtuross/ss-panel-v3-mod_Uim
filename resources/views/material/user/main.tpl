@@ -44,6 +44,9 @@
                     <a class="padding-right-cd waves-attach" href="/user/logout"><span
                                 class="icon icon-lg margin-right">exit_to_app</span>登出</a>
                 </li>
+                <li> 
+                    <a href="//en.gravatar.com/" target="view_window"><i class="icon icon-md t4-text">insert_photo</i>设置头像</a>
+                </li>
             </ul>
             {else}
             <span class="access-hide">未登录</span>
