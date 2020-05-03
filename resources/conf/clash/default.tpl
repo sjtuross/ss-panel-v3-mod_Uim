@@ -1,3 +1,5 @@
+  - DOMAIN-SUFFIX,rossconsulting.cn,DIRECT
+
   - DOMAIN-SUFFIX,smtp,DIRECT
   - DOMAIN-KEYWORD,aria2,DIRECT
 
