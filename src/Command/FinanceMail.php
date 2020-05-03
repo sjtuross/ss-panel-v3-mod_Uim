@@ -1,21 +1,35 @@
 <?php
 
-
 namespace App\Command;
 
 use App\Models\User;
-use App\Services\Config;
-use App\Services\Mail;
-use App\Services\Analytics;
 use App\Utils\Telegram;
-
-use Exception;
-use Ozdemir\Datatables\Datatables;
 use App\Utils\DatatablesHelper;
+use Ozdemir\Datatables\Datatables;
 
-class FinanceMail
+class FinanceMail extends Command
 {
-    public static function sendFinanceMail_day()
+    public $description = ''
+        . '├─=: php xcat FinanceMail [选项]' . PHP_EOL
+        . '│ ├─ day                     - 日报' . PHP_EOL
+        . '│ ├─ week                    - 周报' . PHP_EOL
+        . '│ ├─ month                   - 月报' . PHP_EOL;
+
+    public function boot()
+    {
+        if (count($this->argv) === 2) {
+            echo $this->description;
+        } else {
+            $methodName = $this->argv[2];
+            if (method_exists($this, $methodName)) {
+                $this->$methodName();
+            } else {
+                echo '方法不存在.' . PHP_EOL;
+            }
+        }
+    }
+
+    public function day()
     {
         $datatables = new Datatables(new DatatablesHelper());
         $datatables->query(
@@ -69,22 +83,18 @@ class FinanceMail
         $adminUser = User::where('is_admin', '=', '1')->get();
         foreach ($adminUser as $user) {
             echo 'Send offline mail to user: ' . $user->id;
-            $subject = Config::get('appName') . '-财务日报';
-            $to = $user->email;
-            $title = '财务日报';
-            $text = $text_html;
-            try {
-                Mail::send($to, $subject, 'news/finance.tpl', [
-                    'user' => $user, 'title' => $title, 'text' => $text
-                ], [
-                ]);
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
+            $user->sendMail(
+                $_ENV['appName'] . '-财务日报',
+                'news/finance.tpl',
+                [
+                    'title' => '财务日报',
+                    'text'  => $text_html
+                ],
+                []
+            );
         }
 
-        if (Config::get('finance_public') == true) {
-            $sts = new Analytics();
+        if ($_ENV['finance_public']) {
             Telegram::Send(
                 '新鲜出炉的财务日报~' . PHP_EOL .
                 '昨日总收入笔数:' . $income_count . PHP_EOL .
@@ -94,7 +104,7 @@ class FinanceMail
         }
     }
 
-    public static function sendFinanceMail_week()
+    public function week()
     {
         $datatables = new Datatables(new DatatablesHelper());
         $datatables->query(
@@ -136,22 +146,18 @@ class FinanceMail
         $adminUser = User::where('is_admin', '=', '1')->get();
         foreach ($adminUser as $user) {
             echo 'Send offline mail to user: ' . $user->id;
-            $subject = Config::get('appName') . '-财务周报';
-            $to = $user->email;
-            $title = '财务周报';
-            $text = $text_html;
-            try {
-                Mail::send($to, $subject, 'news/finance.tpl', [
-                    'user' => $user, 'title' => $title, 'text' => $text
-                ], [
-                ]);
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
+            $user->sendMail(
+                $_ENV['appName'] . '-财务周报',
+                'news/finance.tpl',
+                [
+                    'title' => '财务周报',
+                    'text'  => $text_html
+                ],
+                []
+            );
         }
 
-        if (Config::get('finance_public') == true) {
-            $sts = new Analytics();
+        if ($_ENV['finance_public']) {
             Telegram::Send(
                 '新鲜出炉的财务周报~' . PHP_EOL .
                 '上周总收入笔数:' . $income_count . PHP_EOL .
@@ -161,7 +167,7 @@ class FinanceMail
         }
     }
 
-    public static function sendFinanceMail_month()
+    public function month()
     {
         $datatables = new Datatables(new DatatablesHelper());
         $datatables->query(
@@ -183,22 +189,18 @@ class FinanceMail
         $adminUser = User::where('is_admin', '=', '1')->get();
         foreach ($adminUser as $user) {
             echo 'Send offline mail to user: ' . $user->id;
-            $subject = Config::get('appName') . '-财务月报';
-            $to = $user->email;
-            $title = '财务月报';
-            $text = $text_html;
-            try {
-                Mail::send($to, $subject, 'news/finance.tpl', [
-                    'user' => $user, 'title' => $title, 'text' => $text
-                ], [
-                ]);
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
+            $user->sendMail(
+                $_ENV['appName'] . '-财务月报',
+                'news/finance.tpl',
+                [
+                    'title' => '财务月报',
+                    'text'  => $text_html
+                ],
+                []
+            );
         }
 
-        if (Config::get('finance_public') == true) {
-            $sts = new Analytics();
+        if ($_ENV['finance_public']) {
             Telegram::Send(
                 '新鲜出炉的财务月报~' . PHP_EOL .
                 '上月总收入笔数:' . $income_count . PHP_EOL .

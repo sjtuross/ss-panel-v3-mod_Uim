@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\Config;
-
 class Shop extends Model
 {
     protected $connection = 'default';
@@ -81,6 +79,12 @@ class Shop extends Model
         return $content->reset_exp ?? 0;
     }
 
+    public function traffic_package()
+    {
+        $content = json_decode($this->attributes['content']);
+        return isset($content->traffic_package);
+    }
+
     public function content_extra()
     {
         $content = json_decode($this->attributes['content']);
@@ -131,11 +135,17 @@ class Shop extends Model
         $content = json_decode($this->attributes['content'], true);
         $content_text = '';
 
+        if (array_key_exists('traffic_package', $content)) {
+            $user->transfer_enable += $content['bandwidth'] * 1024 * 1024 * 1024;
+            $user->save();
+            return;
+        }
+
         foreach ($content as $key => $value) {
             switch ($key) {
                 case 'bandwidth':
                     if ($is_renew == 0) {
-                        if (Config::get('enable_bought_reset') == true) {
+                        if ($_ENV['enable_bought_reset'] == true) {
                             $user->transfer_enable = $value * 1024 * 1024 * 1024;
                             $user->u = 0;
                             $user->d = 0;
@@ -160,7 +170,7 @@ class Shop extends Model
                     }
                     break;
                 case 'class':
-                    if (Config::get('enable_bought_extend') == true) {
+                    if ($_ENV['enable_bought_extend'] == true) {
                         if ($user->class == $value) {
                             $user->class_expire = date('Y-m-d H:i:s', strtotime($user->class_expire) + $content['class_expire'] * 86400);
                         } else {

@@ -2,21 +2,24 @@
 
 namespace App\Controllers\Admin;
 
-use App\Models\Shop;
-use App\Models\Bought;
 use App\Controllers\AdminController;
-use App\Services\Config;
-use Ozdemir\Datatables\Datatables;
+use App\Models\{
+    Shop,
+    Bought
+};
 use App\Utils\DatatablesHelper;
+use Ozdemir\Datatables\Datatables;
 
 class ShopController extends AdminController
 {
     public function index($request, $response, $args)
     {
-        $table_config['total_column'] = array('op' => '操作', 'id' => 'ID', 'name' => '商品名称',
+        $table_config['total_column'] = array(
+            'op' => '操作', 'id' => 'ID', 'name' => '商品名称',
             'price' => '价格', 'content' => '商品内容',
             'auto_renew' => '自动续费', 'auto_reset_bandwidth' => '续费时是否重置流量',
-            'status' => '状态', 'period_sales' => '周期销量');
+            'status' => '状态', 'period_sales' => '周期销量'
+        );
         $table_config['default_show_column'] = array();
         foreach ($table_config['total_column'] as $column => $value) {
             $table_config['default_show_column'][] = $column;
@@ -67,6 +70,10 @@ class ShopController extends AdminController
             $content['reset_exp'] = $request->getParam('reset_exp');
         }
 
+        if ($request->getParam('traffic_package') != 0) {
+            $content['traffic_package'] = $request->getParam('traffic_package');
+        }
+
         //if ($request->getParam('speedlimit')!=0) {
         $content['speedlimit'] = $request->getParam('speedlimit');
         //}
@@ -80,7 +87,6 @@ class ShopController extends AdminController
         }
 
         $shop->content = json_encode($content);
-
 
         if (!$shop->save()) {
             $rs['ret'] = 0;
@@ -149,6 +155,10 @@ class ShopController extends AdminController
             $content['reset_exp'] = $request->getParam('reset_exp');
         }
 
+        if ($request->getParam('traffic_package') != 0) {
+            $content['traffic_package'] = $request->getParam('traffic_package');
+        }
+
         //if ($request->getParam('speedlimit')!=0) {
         $content['speedlimit'] = $request->getParam('speedlimit');
         //}
@@ -172,7 +182,6 @@ class ShopController extends AdminController
         $rs['msg'] = '保存成功';
         return $response->getBody()->write(json_encode($rs));
     }
-
 
     public function deleteGet($request, $response, $args)
     {
@@ -199,11 +208,13 @@ class ShopController extends AdminController
 
     public function bought($request, $response, $args)
     {
-        $table_config['total_column'] = array('op' => '操作', 'id' => 'ID',
+        $table_config['total_column'] = array(
+            'op' => '操作', 'id' => 'ID',
             'datetime' => '购买日期', 'content' => '内容',
             'price' => '价格', 'user_id' => '用户ID',
             'user_name' => '用户名', 'renew' => '自动续费时间',
-            'auto_reset_bandwidth' => '续费时是否重置流量');
+            'auto_reset_bandwidth' => '续费时是否重置流量'
+        );
         $table_config['default_show_column'] = array();
         foreach ($table_config['total_column'] as $column => $value) {
             $table_config['default_show_column'][] = $column;
@@ -260,7 +271,7 @@ class ShopController extends AdminController
 
         $datatables->edit('period_sales', static function ($data) {
             $shop = Shop::find($data['id']);
-            $period = Config::get('sales_period');
+            $period = $_ENV['sales_period'];
 
             if ($period == 'expire') {
                 $period = json_decode($shop->content, true)['class_expire'];
