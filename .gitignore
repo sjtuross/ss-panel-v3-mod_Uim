@@ -14,8 +14,7 @@ composer.phar
 404.html
 index.html
 
-config/.config.php
-config/.config.php.bak
+config/.config*
 
 public/ssr-download/
 public/images/*.*
