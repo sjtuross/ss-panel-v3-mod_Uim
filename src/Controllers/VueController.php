@@ -418,7 +418,7 @@ class VueController extends BaseController
 
             $array_node['id'] = $node->id;
             $array_node['class'] = $node->node_class;
-            $array_node['name'] = $node->name;
+            $array_node['name'] = $node->NameNoFlag;
             if ($this->user->class < $node->node_class) {
                 $array_node['server'] = '***.***.***.***';
             } elseif ($node->sort == 13) {

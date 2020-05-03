@@ -63,7 +63,7 @@ class NodeController extends UserController
             $array_node['raw_node']   = $node;
             $array_node['id']         = $node->id;
             $array_node['class']      = $node->node_class;
-            $array_node['name']       = $node->name;
+            $array_node['name']       = $node->NameNoFlag;
             $array_node['sort']       = $node->sort;
             $array_node['info']       = $node->info;
             $array_node['mu_only']    = $node->mu_only;

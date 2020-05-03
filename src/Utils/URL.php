@@ -252,7 +252,7 @@ class URL
                 if (
                     ConfController::getMatchProxy(
                         [
-                            'remark' => $node->name
+                            'remark' => $node->NameNoFlag
                         ],
                         [
                             'content' => [
@@ -433,7 +433,7 @@ class URL
         $item = Tools::v2Array($node->server);
         $item['v'] = '2';
         $item['type'] = 'vmess';
-        $item['ps'] = ($emoji ? Tools::addEmoji($node->name) : $node->name);
+        $item['ps'] = ($emoji ? Tools::addEmoji($node->NameNoFlag) : $node->NameNoFlag);
         $item['remark'] = $item['ps'];
         $item['id'] = $user->getUuid();
         $item['class'] = $node->node_class;
@@ -474,7 +474,7 @@ class URL
                         $tmp_node->server .= str_repeat(';', 6 - count($server));
                     }
                     $tmp_node->server .= 'relayserver=' . $source_server['add'] . '|' . 'outside_port=' . $source_server['port'];
-                    $tmp_node->name = $node->name . '=>' . $tmp_node->name;
+                    $tmp_node->name = $node->NameNoFlag . '=>' . $tmp_node->NameNoFlag;
                     $tmp_nodes[] = $tmp_node;
                 }
             }

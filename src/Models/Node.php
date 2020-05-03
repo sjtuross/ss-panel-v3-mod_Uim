@@ -36,7 +36,7 @@ class Node extends Model
         'sort'            => 'int',
     ];
 
-	public function getNameAttribute()
+    public function getNameNoFlagAttribute()
     {
 		$regex = Config::get('flag_regex');
 		$matches = array();
@@ -48,21 +48,7 @@ class Node extends Model
 			return $this->attributes['name'];
 		}
     }
-	
-	public function getFlagAttribute()
-    {
-		$regex = Config::get('flag_regex');
-		$matches = array();
-		preg_match($regex, $this->attributes['name'], $matches);
-		//$matches = preg_split($regex, $this->attributes['name']);
-		if (isset($matches[0])) {
-			return $matches[0].'.png';
-		}
-		else {
-			return 'unknown.png';
-		}
-    }
-	
+
     public function getLastNodeInfoLog()
     {
         $id = $this->attributes['id'];
@@ -259,9 +245,9 @@ class Node extends Model
             ->orderBy('priority', 'DESC')
             ->orderBy('id')
             ->first();
-        $node_name = $this->name;
+        $node_name = $this->NameNoFlag;
         if ($relay_rule != null) {
-            $node_name .= ' - ' . $relay_rule->dist_node()->name;
+            $node_name .= ' - ' . $relay_rule->dist_node()->NameNoFlag;
         }
         if ($mu_port != 0) {
             $mu_user = User::where('port', '=', $mu_port)->where('is_multi_user', '<>', 0)->first();
@@ -320,7 +306,7 @@ class Node extends Model
     {
         $item           = Tools::v2Array($this->server);
         $item['type']   = 'vmess';
-        $item['remark'] = ($emoji ? Tools::addEmoji($this->name) : $this->name);
+        $item['remark'] = ($emoji ? Tools::addEmoji($this->NameNoFlag) : $this->NameNoFlag);
         $item['id']     = $user->getUuid();
         $item['class']  = $this->node_class;
         return $item;
@@ -344,7 +330,7 @@ class Node extends Model
         if ($return_array['net'] != 'obfs' && !in_array($user->method, Config::getSupportParam('ss_aead_method'))) {
             return null;
         }
-        $return_array['remark']         = ($emoji ? Tools::addEmoji($this->name) : $this->name);
+        $return_array['remark']         = ($emoji ? Tools::addEmoji($this->NameNoFlag) : $this->NameNoFlag);
         $return_array['address']        = $return_array['add'];
         $return_array['method']         = $user->method;
         $return_array['passwd']         = $user->passwd;
@@ -387,7 +373,7 @@ class Node extends Model
         if (isset($server[1])) {
             $opt = URL::parse_args($server[1]);
         }
-        $item['remark']   = ($emoji ? Tools::addEmoji($this->name) : $this->name);
+        $item['remark']   = ($emoji ? Tools::addEmoji($this->NameNoFlag) : $this->NameNoFlag);
         $item['type']     = 'trojan';
         $item['address']  = $server[0];
         $item['port']     = (isset($opt['port']) ? (int) $opt['port'] : 443);
