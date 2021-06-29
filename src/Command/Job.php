@@ -208,7 +208,7 @@ class Job extends Command
             rename(BASE_PATH . '/storage/qqwry.dat.bak', BASE_PATH . '/storage/qqwry.dat');
         }
 
-        $this->updatedownload();
+        //$this->updatedownload();
     }
 
     /**
